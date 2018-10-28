@@ -32,13 +32,14 @@ class functions extends database
 
     /**
      * @param $value
-     * @return string
+     * @return bool|string
      */
     public function checkEmail($value) {
         if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
             return $this->checkValue($value);
         }
-        return "";
+
+        return false;
     }
 
     /**
@@ -47,7 +48,7 @@ class functions extends database
      * @return string
      */
     public function checkPassword($password, $passwordCheck) {
-        if ($password === $passwordCheck) {
+        if ($password === $passwordCheck && ($password !== "" && $passwordCheck !== "")) {
             return md5($password);
         }
 
@@ -78,16 +79,23 @@ class functions extends database
         return False;
     }
 
+    /**
+     * @param $firstname
+     * @param $lastname
+     * @param $email
+     * @param $password
+     * @param $birthday
+     * @param $diet
+     * @return bool
+     */
     public function registerClient($firstname, $lastname, $email, $password, $birthday, $diet) {
-        $a = "INSERT INTO clients 
-              (`first_name`, `last_name`, `email`, `password`, `birthday`, `diet`) 
+        $conn = $this->getConn();
+        $query = "INSERT INTO clients 
+              (`first_name`, `last_name`, `email`, `password`, `date_of_birth`, `diet`, `create_date`, `last_online`, `permission`) 
               VALUES 
-              ('" . $this->conn-mysqli_real_escape_string($firstname) . "', '" . $this->conn-mysqli_real_escape_string($lastname) . "', '" . $this->conn-mysqli_real_escape_string($email) . "', ''" . $this->conn-mysqli_real_escape_string($password) . ", '" . $this->conn-mysqli_real_escape_string($birthday) . "', '" . $this->conn-mysqli_real_escape_string($diet) . "');";
+              ('" . $conn->real_escape_string($firstname) . "', '" . $conn->real_escape_string($lastname) . "', '" . $conn->real_escape_string($email) . "', '" . $conn->real_escape_string($password) . "', '" . $conn->real_escape_string($birthday) . "', '" . $conn->real_escape_string($diet) . "', '" . date("Y-m-d H:i:s") . "', '" . date("Y-m-d H:i:s") . "', '1');";
 
-        if ($this->insertItem("INSERT INTO clients 
-                                      (`first_name`, `last_name`, `email`, `password`, `birthday`, `diet`) 
-                                      VALUES 
-                                      ('" . $this->conn-mysqli_real_escape_string($firstname) . "', '" . $this->conn-mysqli_real_escape_string($lastname) . "', '" . $this->conn-mysqli_real_escape_string($email) . "', ''" . $this->conn-mysqli_real_escape_string($password) . ", '" . $this->conn-mysqli_real_escape_string($birthday) . "', '" . $this->conn-mysqli_real_escape_string($diet) . "');")) {
+        if ($this->insertItem($query)) {
             return true;
         }
 
@@ -96,16 +104,20 @@ class functions extends database
 
     /**
      * @param $email
-     * @param $password
-     * @return bool|mysqli_result
+     * @param string $password
+     * @return bool|mysqli_result|string
      */
-    public function checkAccount($email, $password) {
-        $result = $this->getItems("
-            SELECT * FROM clients
-            WHERE email = '" . $this->conn->real_escape_string($email) . "' AND password = '" . $this->conn->real_escape_string(md5($password)) . "';
-        ");
+    public function checkAccount($email, $password = "") {
+        $query = "SELECT * FROM clients
+            WHERE email = '" . $this->conn->real_escape_string($email) . "'";
 
-        return $result;
+        if (!empty($password)) {
+            $query .= " AND password = '" . $this->conn->real_escape_string(md5($password)) . "'";
+        }
+
+        $query .= ";";
+
+        return $this->getItems($query);
     }
 
     /**

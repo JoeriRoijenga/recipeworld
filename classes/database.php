@@ -52,6 +52,13 @@ class database
         return $this->conn->query($query);
     }
 
+
+    /**
+     * @return mysqli
+     */
+    protected function getConn() {
+        return $this->conn;
+    }
     /**
      *
      */
