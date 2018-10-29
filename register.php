@@ -26,10 +26,15 @@ if (isset($_POST["submit"])) {
 <head>
     <meta charset="UTF-8">
     <title>Registreer</title>
-    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 </head>
 <body>
+    <div id="menu">
+        <?php include 'menu.php'; ?>
+    </div>
     <div class="container-fluid">
         <div class="offset-4 col-sm-4 custom-margin">
             <?php if (isset($register)) {

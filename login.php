@@ -24,12 +24,16 @@ if (isset($_POST["submit"])) {
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <div id="menu">
+        <?php include 'menu.php'; ?>
+    </div>
     <div class="container-fluid">
         <div class="offset-4 col-sm-4 custom-margin">
             <?php if (isset($login)) {
@@ -65,7 +69,7 @@ if (isset($_POST["submit"])) {
                             <label class="col-md-4 control-label" for="email">E-mailadres</label>
                             <div class="col-md-4">
                                 <input id="email" name="email" type="text"
-                                       placeholder="e-mailadres" class="form-control input-md custom-width-textbox">
+                                       placeholder="E-mailadres" class="form-control input-md custom-width-textbox">
                             </div>
                         </div>
 
