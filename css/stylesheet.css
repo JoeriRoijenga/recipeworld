@@ -4,3 +4,17 @@
 .custom-width-textbox {
     width:  300%;
 }
+.btn-circle.btn-xl {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 24px;
+    line-height: 1.33;
+}
+.custom-add-button-bottom {
+    position: absolute;
+    bottom: 7%;
+    right: 4%;
+    z-index: 1000;
+}

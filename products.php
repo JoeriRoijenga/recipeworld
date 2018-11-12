@@ -1,0 +1,74 @@
+<?php
+spl_autoload_register(function ($classname) {
+    include "classes/" . $classname . ".php";
+});
+
+session_start();
+$functions = new functions("recipeworld");
+$products = $functions->getProducts();
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Producten</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="menu">
+        <?php include 'menu.php'; ?>
+    </div>
+    <div class="container-fluid">
+        <div class="col-md-12 custom-margin">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Naam</th>
+                        <th scope="col">URL</th>
+                        <th scope="col">Omschrijving</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                while ($product = $products->fetch_assoc()) {
+                    ?>
+                    <tr>
+                        <th scope="row"><?php echo $product["product_id"]; ?></th>
+                        <td><?php echo $product["product_name"]; ?></td>
+                        <td><?php echo $product["product_url"]; ?></td>
+                        <td><?php echo $product["product_description"]; ?></td>
+                        <td>
+                            <form action="products_edit.php" method="post">
+                                <input type="hidden" name="id" value="<?php echo $product["product_id"]; ?>" />
+                                <button type="submit"><span class="fas fa-pencil-alt"></span></button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="products_delete.php" method="post">
+                                <input type="hidden" name="id" value="<?php echo $product["product_id"]; ?>" />
+                                <button type="submit"><span class="fas fa-trash-alt"></span></button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="custom-margin custom-add-button-bottom">
+        <form action="products_edit.php" method="post">
+            <button type="submit" class="btn btn-danger btn-circle btn-xl"><i class="fa fa-plus"></i></button>
+        </form>
+    </div>
+</body>
+</html>

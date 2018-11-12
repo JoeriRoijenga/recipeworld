@@ -36,7 +36,7 @@ if (isset($_POST["submit"])) {
         <?php include 'menu.php'; ?>
     </div>
     <div class="container-fluid">
-        <div class="offset-4 col-sm-4 custom-margin">
+        <div class="offset-4 col-md-4 custom-margin">
             <?php if (isset($register)) {
                 if (!$register) {
                     ?>

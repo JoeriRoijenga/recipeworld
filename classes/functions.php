@@ -161,6 +161,38 @@ class functions extends database
     }
 
     /**
+     * @return bool|mysqli_result
+     */
+    public function getProducts() {
+        return $this->getItems("SELECT * FROM products;");
+    }
+
+    /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function getProductById($id) {
+        return $this->getItems("SELECT * FROM products WHERE product_id = '" . $id . "';");
+    }
+
+    /**
+     * @return bool|mysqli_result
+     */
+    public function getTypes() {
+        return $this->getItems("SELECT * FROM types;");
+    }
+
+    /**
+     * @param $name
+     * @param $url
+     * @param $description
+     * @param $type
+     * @return bool|mysqli_result
+     */
+    public function addProduct($name, $url, $description, $type) {
+        return $this->insertItem("INSERT INTO products (product_name, product_url, product_description, product_type) VALUES ($name, $url, $description, $type)");
+    }
+    /**
      *
      */
     public function __destruct() {
