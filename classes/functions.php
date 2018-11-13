@@ -42,9 +42,25 @@ class functions extends database
         return false;
     }
 
+    /**
+     * @param $url
+     * @return array|string
+     */
     public function checkUrl($url) {
         if(preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $url) || empty($url)) {
-            return $url;
+            return [true, $this->checkValue($url)];
+        }
+
+        return [false, $url];
+    }
+
+    /**
+     * @param $type
+     * @return bool
+     */
+    public function checkType($type) {
+        if ($type !== 0) {
+            return $type;
         }
 
         return false;
@@ -153,6 +169,7 @@ class functions extends database
             $_SESSION["id"] = $account["client_id"];
             $_SESSION["name"] = $account["first_name"] . " " . $account["last_name"];
             $_SESSION["email"] = $account["email"];
+            $_SESSION["permissions"] = $account["permissions"];
             $_SESSION["timeout"] = time() + 3600;
 
             return true;
@@ -188,6 +205,13 @@ class functions extends database
      */
     public function getTypes() {
         return $this->getItems("SELECT * FROM types;");
+    }
+
+    /**
+     * @return bool|mysqli_result
+     */
+    public function getAllergens() {
+        return $this->getItems("SELECT * FROM allergens;");
     }
 
     /**

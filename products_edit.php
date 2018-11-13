@@ -10,6 +10,8 @@ $hidden = 0;
 $name = $url = $description = "";
 $type = 0;
 $types = $functions->getTypes();
+$url = ["", ""];
+$allergens = $functions->getAllergens();
 
 if (isset($_POST["product_id"])){
     $id = $_POST["product_id"];
@@ -29,16 +31,16 @@ if (isset($_POST["submit"])) {
 
     $name = $functions->checkValue($_POST["product_name"]);
     $url = $functions->checkUrl($_POST["product_url"]);
-    $description = $_POST["product_description"];
-    $type = $_POST["product_type"];
+    $description = $functions->checkValue($_POST["product_description"]);
+    $type = $functions->checkType($_POST["product_type"]);
 
-    if ($url === false OR $name === false OR $description === false OR $type === false) {
+    if ($url[0] !== false AND $name !== false AND $description !== false AND $type !== false) {
         if ($_POST["hidden"] === "0") {
-            if ($functions->addProduct($name, $url, $description, $type)) {
+            if ($functions->addProduct($name, $url[1], $description, $type)) {
                 header("Location: products.php?add=true");
             }
         } elseif ($_POST["hidden"] === "1") {
-            if ($functions->editProduct($name, $url, $description, $type, $id)) {
+            if ($functions->editProduct($name, $url[1], $description, $type, $id)) {
                 header("Location: products.php?edit=true");
             }
         }
@@ -91,7 +93,7 @@ if (isset($_POST["submit"])) {
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="product_url">URL</label>
                         <div class="col-md-4">
-                            <input id="product_url" name="product_url" type="text" placeholder="URL" class="form-control input-md custom-width-textbox" value="<?php echo $url; ?>">
+                            <input id="product_url" name="product_url" type="text" placeholder="URL" class="form-control input-md custom-width-textbox" value="<?php echo $url[1]; ?>">
                         </div>
                     </div>
 
@@ -105,6 +107,29 @@ if (isset($_POST["submit"])) {
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="product_type">Type</label>
                         <div class="col-md-10">
+                            <select id="product_type" name="product_type" class="form-control">
+                                <option value="0">Maak een keuze</option>
+                                <?php
+                                while ($productType = $types->fetch_assoc()) {
+                                    ?>
+                                    <option value="<?php echo $productType["type_id"]; ?>" <?php if ($type === $productType["type_id"]) { echo "selected"; } ?>><?php echo $productType["type_name"]; ?></option>
+                                    <?php
+                                }
+                                ?>
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="product_type">Allergieën</label>
+                        <div class="col-md-10">
+                            <select name="allergens" multiple>
+                                <option value="volvo">Volvo</option>
+                                <option value="saab">Saab</option>
+                                <option value="opel">Opel</option>
+                                <option value="audi">Audi</option>
+                            </select>
                             <select id="product_type" name="product_type" class="form-control">
                                 <option value="0">Maak een keuze</option>
                                 <?php

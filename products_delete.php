@@ -8,7 +8,7 @@ $id = $_POST["product_id"];
 
 $success = "false";
 
-if ($functions->removeProuct($id)) {
+if ($functions->removeProduct($id)) {
     $success = "true";
 }
 
