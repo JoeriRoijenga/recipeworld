@@ -36,8 +36,7 @@ class database
     }
 
     /**
-     * @param $artikelnr
-     * @param $newPrice
+     * @param $query
      * @return bool|mysqli_result
      */
     protected function updateItem($query) {
@@ -52,6 +51,13 @@ class database
         return $this->conn->query($query);
     }
 
+    /**
+     * @param $query
+     * @return bool|mysqli_result
+     */
+    protected function removeItem($query) {
+        return $this->conn->query($query);
+    }
 
     /**
      * @return mysqli

@@ -85,7 +85,7 @@ if (isset($_POST["submit"])) {
                         <div class="form-group">
                             <div class="col-md-12">
                                 <button type="submit" id="submit" name="submit" class="btn btn-primary">Login</button>
-                                <a href="#" >Wachtwoord vergeten?</a>
+<!--                                <a href="#" >Wachtwoord vergeten?</a>-->
                             </div>
                         </div>
                     </fieldset>

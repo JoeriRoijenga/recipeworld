@@ -42,6 +42,14 @@ class functions extends database
         return false;
     }
 
+    public function checkUrl($url) {
+        if(preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $url) || empty($url)) {
+            return $url;
+        }
+
+        return false;
+    }
+
     /**
      * @param $password
      * @param $passwordCheck
@@ -190,8 +198,33 @@ class functions extends database
      * @return bool|mysqli_result
      */
     public function addProduct($name, $url, $description, $type) {
-        return $this->insertItem("INSERT INTO products (product_name, product_url, product_description, product_type) VALUES ($name, $url, $description, $type)");
+        return $this->insertItem("INSERT INTO products (product_name, product_url, product_description, product_type, product_usage) VALUES ('$name', '$url', '$description', '$type', '0');");
     }
+
+    /**
+     * @param $name
+     * @param $url
+     * @param $description
+     * @param $type
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function editProduct($name, $url, $description, $type, $id) {
+        return $this->updateItem("UPDATE products SET product_name = '$name', product_url = '$url', product_description = '$description', product_type = '$type' WHERE product_id = '$id';");
+    }
+
+    /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function removeProduct($id) {
+        if($this->removeItem("DELETE FROM product_allergens WHERE product_id = '$id';") && $this->removeItem("DELETE FROM products WHERE product_id = '" . $id . "';")) {
+            return true;
+        }
+        
+        return false;
+    }
+
     /**
      *
      */

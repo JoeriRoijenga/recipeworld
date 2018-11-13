@@ -1,12 +1,33 @@
 <?php
-spl_autoload_register(function ($classname) {
-    include "classes/" . $classname . ".php";
+spl_autoload_register(function ($class_name) {
+    include "classes/" . $class_name . ".php";
 });
 
 session_start();
 $functions = new functions("recipeworld");
 $products = $functions->getProducts();
-
+$message = "";
+if (isset($_GET["edit"])) {
+    if ($_GET["edit"] === "true") {
+        $message = "aangepast";
+    } else {
+        $message = false;
+    }
+}
+if (isset($_GET["delete"])) {
+    if ($_GET["delete"] === "true") {
+        $message = "verwijderd";
+    } else {
+        $message = false;
+    }
+}
+if (isset($_GET["add"])) {
+    if ($_GET["add"] === "true") {
+        $message = "toegevoegd";
+    } else {
+        $message = false;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +46,28 @@ $products = $functions->getProducts();
     </div>
     <div class="container-fluid">
         <div class="col-md-12 custom-margin">
+            <?php if (isset($_GET["delete"]) || isset($_GET["edit"]) || isset($_GET["add"])) {
+                if ($message === false) {
+                    ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Er is iets mis gegaan!</strong> Probeer het nog een keer.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <?php
+                } elseif ($message !== false) {
+                    ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Succes!</strong> Het product is <?php echo $message; ?>.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <?php
+                }
+            }
+            ?>
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
@@ -47,13 +90,13 @@ $products = $functions->getProducts();
                         <td><?php echo $product["product_description"]; ?></td>
                         <td>
                             <form action="products_edit.php" method="post">
-                                <input type="hidden" name="id" value="<?php echo $product["product_id"]; ?>" />
+                                <input type="hidden" name="product_id" value="<?php echo $product["product_id"]; ?>" />
                                 <button type="submit"><span class="fas fa-pencil-alt"></span></button>
                             </form>
                         </td>
                         <td>
                             <form action="products_delete.php" method="post">
-                                <input type="hidden" name="id" value="<?php echo $product["product_id"]; ?>" />
+                                <input type="hidden" name="product_id" value="<?php echo $product["product_id"]; ?>" />
                                 <button type="submit"><span class="fas fa-trash-alt"></span></button>
                             </form>
                         </td>

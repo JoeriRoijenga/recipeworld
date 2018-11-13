@@ -1,22 +1,50 @@
 <?php
-spl_autoload_register(function ($classname) {
-    include "classes/" . $classname . ".php";
+spl_autoload_register(function ($class_name) {
+    include "classes/" . $class_name . ".php";
 });
 
 session_start();
 $functions = new functions("recipeworld");
 $text = "Toevoegen";
+$hidden = 0;
 $name = $url = $description = "";
 $type = 0;
 $types = $functions->getTypes();
 
-if (isset($_POST["id"])){
-    $product = $functions->getProductById($_POST["id"])->fetch_assoc();
+if (isset($_POST["product_id"])){
+    $id = $_POST["product_id"];
+    $product = $functions->getProductById($id)->fetch_assoc();
     $text = "Aanpassen";
+    $hidden = 1;
     $name = $product["product_name"];
     $url = $product["product_url"];
     $description = $product["product_description"];
     $type = $product["product_type"];
+}
+
+if (isset($_POST["submit"])) {
+    if (isset($_POST["id"])) {
+        $id = $_POST["id"];
+    }
+
+    $name = $functions->checkValue($_POST["product_name"]);
+    $url = $functions->checkUrl($_POST["product_url"]);
+    $description = $_POST["product_description"];
+    $type = $_POST["product_type"];
+
+    if ($url === false OR $name === false OR $description === false OR $type === false) {
+        if ($_POST["hidden"] === "0") {
+            if ($functions->addProduct($name, $url, $description, $type)) {
+                header("Location: products.php?add=true");
+            }
+        } elseif ($_POST["hidden"] === "1") {
+            if ($functions->editProduct($name, $url, $description, $type, $id)) {
+                header("Location: products.php?edit=true");
+            }
+        }
+    }
+
+    $failed = true;
 }
 
 ?>
@@ -35,7 +63,20 @@ if (isset($_POST["id"])){
 </div>
 <div class="container-fluid">
     <div class="offset-4 col-md-4 custom-margin">
-        <form action="" method="post">
+        <?php if (isset($_POST["submit"])) {
+            if ($failed) {
+                ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Er is iets mis gegaan!</strong> Probeer het nog een keer.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <?php
+            }
+        }
+        ?>
+        <form action="#" method="post">
             <fieldset>
                 <div class="form-group">
                     <legend>Product <?php echo $text; ?></legend>
@@ -55,21 +96,21 @@ if (isset($_POST["id"])){
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="description">Omschrijving</label>
+                        <label class="col-md-4 control-label" for="product_description">Omschrijving</label>
                         <div class="col-md-4">
-                            <input id="description" name="product_description" type="text" placeholder="Omschrijving" class="form-control input-md custom-width-textbox"value="<?php echo $description; ?>">
+                            <input id="product_description" name="product_description" type="text" placeholder="Omschrijving" class="form-control input-md custom-width-textbox"value="<?php echo $description; ?>">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="type">Type</label>
+                        <label class="col-md-4 control-label" for="product_type">Type</label>
                         <div class="col-md-10">
-                            <select id="type" name="type" class="form-control">
+                            <select id="product_type" name="product_type" class="form-control">
                                 <option value="0">Maak een keuze</option>
                                 <?php
                                 while ($productType = $types->fetch_assoc()) {
                                     ?>
-                                    <option value="<?php $productType["type_id"]; ?>" <?php if ($type === $productType["type_id"]) { echo "selected";} ?>><?php echo $productType["type_name"]; ?></option>
+                                    <option value="<?php echo $productType["type_id"]; ?>" <?php if ($type === $productType["type_id"]) { echo "selected"; } ?>><?php echo $productType["type_name"]; ?></option>
                                     <?php
                                 }
                                 ?>
@@ -79,7 +120,11 @@ if (isset($_POST["id"])){
                     </div>
 
                     <div class="col-md-12">
-                        <button type="submit" id="submit" name="submit" class="btn btn-primary"><?php echo $text; ?></button>
+                        <input type="hidden" name="hidden" value="<?php echo $hidden; ?>" />
+                        <?php if (isset($id)) { ?>
+                            <input type="hidden" name="id" value="<?php echo $id; ?>" />
+                        <?php } ?>
+                        <input type="submit" id="submit" name="submit" class="btn btn-primary" value="<?php echo $text; ?>"/>
                     </div>
                 </div>
             </fieldset>
