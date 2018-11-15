@@ -113,5 +113,8 @@ if (isset($_GET["add"])) {
             <button type="submit" class="btn btn-danger btn-circle btn-xl"><i class="fa fa-plus"></i></button>
         </form>
     </div>
+    <div id="menu">
+        <?php include 'footer.php'; ?>
+    </div>
 </body>
 </html>

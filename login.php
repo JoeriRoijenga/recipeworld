@@ -93,5 +93,9 @@ if (isset($_POST["submit"])) {
             </div>
         </div>
     </div>
+    <div class="min-height"></div>
+    <div id="menu">
+        <?php include 'footer.php'; ?>
+    </div>
 </body>
 </html>

@@ -29,7 +29,8 @@ if (isset($_POST["submit"])) {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
-    <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div id="menu">
@@ -132,6 +133,9 @@ if (isset($_POST["submit"])) {
                 </form>
             </div>
         </div>
+    </div>
+    <div id="menu">
+        <?php include 'footer.php'; ?>
     </div>
 </body>
 </html>

@@ -67,6 +67,18 @@ class functions extends database
     }
 
     /**
+     * @param $allergens
+     * @return bool
+     */
+    public function checkAllergens($allergens) {
+        if (count($allergens) > 0) {
+            return $allergens;
+        }
+
+        return false;
+    }
+
+    /**
      * @param $password
      * @param $passwordCheck
      * @return string
@@ -169,7 +181,7 @@ class functions extends database
             $_SESSION["id"] = $account["client_id"];
             $_SESSION["name"] = $account["first_name"] . " " . $account["last_name"];
             $_SESSION["email"] = $account["email"];
-            $_SESSION["permissions"] = $account["permissions"];
+            $_SESSION["permission"] = $account["permission"];
             $_SESSION["timeout"] = time() + 3600;
 
             return true;
@@ -215,14 +227,31 @@ class functions extends database
     }
 
     /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function getAllergensWhere($id) {
+        return $this->getItems("SELECT * FROM product_allergens WHERE product_id = '$id';");
+    }
+
+    /**
      * @param $name
      * @param $url
      * @param $description
      * @param $type
      * @return bool|mysqli_result
      */
-    public function addProduct($name, $url, $description, $type) {
-        return $this->insertItem("INSERT INTO products (product_name, product_url, product_description, product_type, product_usage) VALUES ('$name', '$url', '$description', '$type', '0');");
+    public function addProduct($name, $url, $description, $type, $allergens) {
+        if ($this->insertItem("INSERT INTO products (product_name, product_url, product_description, product_type, product_usage) VALUES ('$name', '$url', '$description', '$type', '0');")) {
+            $productId = $this->getConn()->insert_id;
+            foreach($allergens as $allergen) {
+                $this->insertItem("INSERT INTO product_allergens (product_id, allergen_id) VALUES ('" . $productId . "', '" . $allergen . "')");
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -231,10 +260,20 @@ class functions extends database
      * @param $description
      * @param $type
      * @param $id
-     * @return bool|mysqli_result
+     * @param $allergens
+     * @return bool
      */
-    public function editProduct($name, $url, $description, $type, $id) {
-        return $this->updateItem("UPDATE products SET product_name = '$name', product_url = '$url', product_description = '$description', product_type = '$type' WHERE product_id = '$id';");
+    public function editProduct($name, $url, $description, $type, $id, $allergens) {
+        if($this->updateItem("UPDATE products SET product_name = '$name', product_url = '$url', product_description = '$description', product_type = '$type' WHERE product_id = '$id';")) {
+            if ($this->removeItem("DELETE FROM product_allergens WHERE product_id = '$id';")) {
+                foreach ($allergens as $allergen) {
+                    $this->insertItem("INSERT INTO product_allergens (product_id, allergen_id) VALUES ('" . $id . "', '" . $allergen . "')");
+                }
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
