@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-
+    <title>Inbox</title>
 
     <!--Connectie naar DB-->
     <?php
@@ -43,12 +43,12 @@
     $permission = mysqli_fetch_assoc($permission);
     $permission = $permission['permission'];
 
-    if($permission == 1) {
+    if($permission == 2) {
 
         $queryGetMessages = "SELECT concat(first_name, ' ', last_name) as fullname, email, inbox.client_id, message_message, message_timesend, inbox.message_id FROM recipeworld.inbox
                                  JOIN messages ON inbox.message_id = messages.message_id
                                  JOIN clients ON inbox.client_id = clients.client_id 
-                                 WHERE permission = 2
+                                 WHERE permission = 1
                                  ORDER BY messages.message_timesend DESC;";
         $result = mysqli_query($connection, $queryGetMessages);
 
@@ -109,7 +109,7 @@
 
 
         <?php
-    } elseif ($permission == 2) {
+    } elseif ($permission == 1) {
 
 
         $queryGetMessages = "SELECT first_name, message_message, message_timesend FROM recipeworld.inbox

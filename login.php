@@ -15,6 +15,7 @@ if (isset($_POST["submit"])) {
     if ($account->num_rows === 1) {
         $login = $functions->setLogin($account);
         $functions->updateDateTime($_SESSION["id"]);
+        header("location: fridge.php");
     }
 }
 

@@ -41,7 +41,7 @@
             $query = "SELECT permission FROM clients WHERE client_id = " . $_SESSION['id'] . ";";
             $result = mysqli_query($connection, $query);
             $result = mysqli_fetch_assoc($result);
-            if($result['permission'] == 1) {
+            if($result['permission'] == 2) {
                 echo "<h6>" . "To everyone! Watch out." . "</h6>";
             }?>
 

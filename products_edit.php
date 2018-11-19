@@ -36,9 +36,12 @@ if (isset($_POST["submit"])) {
     $url = $functions->checkUrl($_POST["product_url"]);
     $description = $functions->checkValue($_POST["product_description"]);
     $type = $functions->checkType($_POST["product_type"]);
-    $chosenAllergens = $functions->checkAllergens($_POST["product_allergens"]);
-
-    if ($url[0] !== false AND $name !== false AND $description !== false AND $type !== false AND $chosenAllergens !== false) {
+    if (isset($_POST["product_allergens"])) {
+        $chosenAllergens = $functions->checkAllergens($_POST["product_allergens"]);
+    } else {
+        $chosenAllergens = [];
+    }
+    if ($url[0] !== false AND $name !== "" AND $description !== false AND $type !== false AND $chosenAllergens !== false) {
         if ($_POST["hidden"] === "0") {
             if ($functions->addProduct($name, $url[1], $description, $type, $chosenAllergens)) {
                 header("Location: products.php?add=true");
@@ -133,7 +136,7 @@ if (isset($_POST["submit"])) {
                                     <?php
                                     while ($productAllergen = $allergens->fetch_assoc()) {
                                         ?>
-                                        <option value="<?php echo $productAllergen["allergen_id"]; ?>" <?php if (in_array($productAllergen["allergen_id"], $arrayAllergens)) { echo "selected"; } ?>><?php echo $productAllergen["allergen_name"]; ?></option>
+                                        <option value="<?php echo $productAllergen["allergen_id"]; ?>" <?php if (isset($arrayAllergens)) {if (in_array($productAllergen["allergen_id"], $arrayAllergens)) { echo "selected"; }} ?>><?php echo $productAllergen["allergen_name"]; ?></option>
                                         <?php
                                     }
                                     ?>

@@ -3,12 +3,12 @@
 
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+    <link rel="stylesheet" href="css/stylesheet.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <title>Profiel</title>
+    <title>Bewerk Profiel</title>
     <!--Connectie naar DB-->
     <?php
     $servername = "localhost";
@@ -16,7 +16,7 @@
     $password = "root";
     $database = "recipeworld";
     session_start();
-//    $_SESSION["id"] = "6";
+//    $_SESSION["id"] = "2";
 
     $connection = mysqli_connect($servername, $username, $password, $database);
 
@@ -140,40 +140,65 @@
     <?php } elseif($_POST['submit'] == "Versturen") {
 
 
+
         foreach($_POST as $clientValues => $newValue) {
             $_POST['$newValue'] = htmlspecialchars(mysqli_real_escape_string($connection, $newValue));
+
+            if($newValue === ""){
+
+                if($clientValues !== "newPassword" && $clientValues !== "newPasswordConfirm") {
+                    $error = "Leeg veld";
+                }
+
+
+            }
+
+
+
         }
 
 
-
-        $queryGetPassword = "SELECT password FROM clients WHERE client_id = " . $_SESSION['id'] . ";";
-        $result = mysqli_query($connection, $queryGetPassword);
-        $result = mysqli_fetch_assoc($result);
-        $savedPassword = $result['password'];
-
-        $oldPassword = md5($_POST['oldPassword']);
-        if($savedPassword === $oldPassword) {
+        if (empty($error)) {
 
 
-            $queryUpdateClient = "UPDATE recipeworld.clients SET `first_name` = \"" . $_POST['first_name'] . "\", `last_name` = \"" . $_POST['last_name'] . "\", `email` = \"" . $_POST['email'] . "\", `date_of_birth` = \"" . $_POST['date_of_birth'] . "\", `diet` = " . $_POST['diet_id'] . " WHERE client_id = " . $_SESSION["id"] . ";";
-            mysqli_query($connection, $queryUpdateClient);
+            $queryGetPassword = "SELECT password FROM clients WHERE client_id = " . $_SESSION['id'] . ";";
+            $result = mysqli_query($connection, $queryGetPassword);
+            $result = mysqli_fetch_assoc($result);
+            $savedPassword = $result['password'];
 
-            if(isset($_POST['newPassword']) && isset($_POST['newPasswordConfirm'])) {
-                if($_POST['newPasswordConfirm'] === $_POST['newPassword']) {
-                    $newPassword = $_POST['newPassword'];
-                    $newPassword = md5($newPassword);
+            $oldPassword = md5($_POST['oldPassword']);
+            if($savedPassword === $oldPassword) {
 
-                    $queryUpdatePassword = "UPDATE recipeworld.clients SET `password` = \"" . $newPassword . "\" WHERE client_id = " . $_SESSION['id'] . ";";
-                    mysqli_query($connection, $queryUpdatePassword);
 
-                } else {$error = "Wachtwoord niet gelijk!";}
-            } elseif (empty($_POST['newPassword']) or empty($_POST['newPasswordConfirm'])) {
-                $error = "Wachtwoord niet bevestigd!";
-            } elseif (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                $error = "Geen geldig email-adres!";
-            }
+                $queryUpdateClient = "UPDATE recipeworld.clients SET `first_name` = \"" . $_POST['first_name'] . "\", `last_name` = \"" . $_POST['last_name'] . "\", `email` = \"" . $_POST['email'] . "\", `date_of_birth` = \"" . $_POST['date_of_birth'] . "\", `diet` = " . $_POST['diet_id'] . " WHERE client_id = " . $_SESSION["id"] . ";";
+                mysqli_query($connection, $queryUpdateClient);
 
-        } else {$error = "Wachtwoord Fout!";}
+                if(!empty($_POST['newPassword']) && !empty($_POST['newPasswordConfirm'])) {
+                    if($_POST['newPasswordConfirm'] === $_POST['newPassword']) {
+                        $newPassword = $_POST['newPassword'];
+                        $newPassword = md5($newPassword);
+
+                        $queryUpdatePassword = "UPDATE recipeworld.clients SET `password` = \"" . $newPassword . "\" WHERE client_id = " . $_SESSION['id'] . ";";
+                        mysqli_query($connection, $queryUpdatePassword);
+//                        echo $queryUpdatePassword;
+                    } else {$error = "Wachtwoord niet gelijk!";}
+                } elseif ($_POST['newPassword'] !== $_POST['newPasswordConfirm']) {
+                    $error = "Wachtwoord niet bevestigd!";
+                } elseif(empty($_POST['newPassword']) && empty($_POST['newPasswordConfirm'])) {
+                    unset($_POST['newPassword']);
+                    unset($_POST['newPasswordConfirm']);
+
+
+
+
+
+
+                } elseif (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                    $error = "Geen geldig email-adres!";
+                }
+
+            } else {$error = "Wachtwoord Fout!";}
+        }
 
 
 
@@ -196,8 +221,6 @@
                 <a href="profile.php?id=<?php echo $_SESSION['id']; ?>" class="btn btn-secondary">Terug</a>
                 <br><br><br><br><br><br><br><br><br>
             </div>
-            <div class="min-height"></div>
-
             <?php
             include 'footer.php';
         }
@@ -227,6 +250,7 @@
             <?php
             include 'footer.php';
         }
+
     }
 
     ?>

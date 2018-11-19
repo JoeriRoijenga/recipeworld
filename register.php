@@ -14,8 +14,9 @@ if (isset($_POST["submit"])) {
     $password = $functions->checkPassword($functions->checkValue($_POST["password"]), $functions->checkValue($_POST["password-check"]));
     $birthday = $functions->checkDate($_POST["birthday"]);
     $diet = $functions->checkDiet($_POST["diet"]);
-    if ($firstName !== "" AND $lastName !== "" AND !$email AND !$password AND !$birthday AND !$diet) {
+    if ($firstName !== "" AND $lastName !== "" AND $email !== false AND $password !== false AND $birthday !== false AND $diet !== false) {
         $register = $functions->registerClient($firstName, $lastName, $email, $password, $birthday, $diet);
+        header("location: login.php");
     }
 
 }

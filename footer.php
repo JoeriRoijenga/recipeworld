@@ -12,7 +12,7 @@
                     Recipeworld
                 </div>
                 <div class="footer-text">
-                    Recipeworld is een receptenwebsite waar je recepten kan zoeken op basis van je gekozen ingredienten. Het is gecreërd voor ons eerste project van de HBO-ICT opleiding van de Hanze Hogeschool.<br><br>Zie <a href="over ons.php">Over ons</a> voor meer informatie
+                    Recipeworld is een receptenwebsite waar je recepten kan zoeken op basis van je gekozen ingredienten. Het is gecreërd voor ons eerste project van de HBO-ICT opleiding van de Hanze Hogeschool.<br><br>Zie <a href="about.php">Over ons</a> voor meer informatie
 
                 </div>
             </div>

@@ -60,7 +60,7 @@
 
                 <div id="collapseTwo" class="collapse" data-parent="#accordion">
                     <div class="card-body">
-                        Recepten kun je <a href="submit.php">hier</a> insturen.
+                        Recepten kun je <a href="contact.php">hier</a> insturen.
                     </div>
                 </div>
             </div>

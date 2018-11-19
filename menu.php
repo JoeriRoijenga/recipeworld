@@ -7,7 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="recipe.php">Home <span class="sr-only">(current)</span></a>
             </li>
             <?php
             if (isset($_SESSION["id"])) {
@@ -28,7 +28,7 @@
             }
             ?>
         </ul>
-        <form class="form-inline my-2 my-lg-0" method="get">
+        <form class="form-inline my-2 my-lg-0" action="recipe.php" method="get">
             <input class="form-control mr-sm-2" type="search" placeholder="Zoeken" aria-label="search" name="search">
             <button class="btn btn-outline-primary my-2 my-sm-0" type="submit"><span class="fas fa-search"></span></button>
         </form>
