@@ -14,9 +14,10 @@
 }
 .custom-add-button-bottom {
     position: absolute;
-    bottom: 7%;
+    /*bottom: 7%;*/
+    /*margin-top: 100%;*/
     right: 4%;
-    z-index: 1000;
+    /*z-index: 1000;*/
 }
 .custom-multi-select {
     width: 100%;

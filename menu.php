@@ -23,6 +23,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="products.php">Producten</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="recipes.php">Recepten</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="clients.php">Gebruikers</a>
+                    </li>
                     <?php
                 }
             }

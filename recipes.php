@@ -5,7 +5,7 @@ spl_autoload_register(function ($class_name) {
 
 session_start();
 $functions = new functions("recipeworld");
-$products = $functions->getProducts();
+$recipes = $functions->getRecipes();
 $message = "";
 if (isset($_GET["edit"])) {
     if ($_GET["edit"] === "true") {
@@ -33,7 +33,7 @@ if (isset($_GET["add"])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Producten</title>
+    <title>Recepten</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
@@ -46,12 +46,7 @@ if (isset($_GET["add"])) {
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6 custom-margin text-info">
-                <label>
-                    <b>Verwijderen is alleen mogelijk als het product niet in een recept wordt gebruikt.</b>
-                </label>
-            </div>
-            <div class="offset-5 custom-margin">
+            <div class="offset-11 custom-margin">
                 <form action="products_edit.php" method="post">
                     <button type="submit" class="btn btn-info">Voeg toe</button>
                 </form>
@@ -86,38 +81,32 @@ if (isset($_GET["add"])) {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Naam</th>
-                            <th scope="col">URL</th>
                             <th scope="col">Omschrijving</th>
+                            <th scope="col">Views</th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php
-                    while ($product = $products->fetch_assoc()) {
+                    while ($recipe = $recipes->fetch_assoc()) {
                         ?>
                         <tr>
-                            <th scope="row"><?php echo $product["product_id"]; ?></th>
-                            <td><?php echo $product["product_name"]; ?></td>
-                            <td><?php echo $product["product_url"]; ?></td>
-                            <td><?php echo $product["product_description"]; ?></td>
+                            <th scope="row"><?php echo $recipe["recipe_id"]; ?></th>
+                            <td><?php echo $recipe["recipe_name"]; ?></td>
+                            <td><?php echo $recipe["recipe_description"]; ?></td>
+                            <td><?php echo $recipe["recipe_views"]; ?></td>
                             <td>
-                                <form action="products_edit.php" method="post">
-                                    <input type="hidden" name="product_id" value="<?php echo $product["product_id"]; ?>" />
+                                <form action="recipes_edit.php" method="post">
+                                    <input type="hidden" name="recipe_id" value="<?php echo $recipe["recipe_id"]; ?>" />
                                     <button type="submit"><span class="fas fa-pencil-alt"></span></button>
                                 </form>
                             </td>
                             <td>
-                                <?php
-                                if ($functions->getRecipesWhere($product["product_id"])->num_rows === 0) {
-                                ?>
-                                    <form action="products_delete.php" method="post">
-                                        <input type="hidden" name="product_id" value="<?php echo $product["product_id"]; ?>" />
-                                        <button type="submit"><span class="fas fa-trash-alt"></span></button>
-                                    </form>
-                                <?php
-                                }
-                                ?>
+                                <form action="recipes_delete.php" method="post">
+                                    <input type="hidden" name="recipe_id" value="<?php echo $recipe["recipe_id"]; ?>" />
+                                    <button type="submit"><span class="fas fa-trash-alt"></span></button>
+                                </form>
                             </td>
                         </tr>
                         <?php

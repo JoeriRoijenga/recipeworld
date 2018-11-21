@@ -67,12 +67,36 @@ class functions extends database
     }
 
     /**
+     * @param $type
+     * @return bool
+     */
+    public function checkCategory($category) {
+        if ($category !== 0) {
+            return $category;
+        }
+
+        return false;
+    }
+
+    /**
      * @param $allergens
      * @return bool
      */
     public function checkAllergens($allergens) {
         if (count($allergens) > 0) {
             return $allergens;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $ingredient
+     * @return bool
+     */
+    public function checkIngredients($ingredient) {
+        if (count($ingredient) > 0) {
+            return $ingredient;
         }
 
         return false;
@@ -235,6 +259,51 @@ class functions extends database
     }
 
     /**
+     * @return bool|mysqli_result
+     */
+    public function getRecipes() {
+        return $this->getItems("SELECT * FROM recipes;");
+    }
+
+    /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function getRecipesWhere($id) {
+        return $this->getItems("SELECT * FROM ingredients WHERE product_id = '" . $id . "';");
+    }
+
+    /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function getRecipeById($id) {
+        return $this->getItems("SELECT * FROM recipes WHERE recipe_id = '" . $id . "';");
+    }
+
+    /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function getIngredientsWhere($id) {
+        return $this->getItems("SELECT * FROM ingredients WHERE recipe_id = '" . $id . "';");
+    }
+
+    /**
+     * @return bool|mysqli_result
+     */
+    public function getClients() {
+        return $this->getItems("SELECT * FROM clients;");
+    }
+
+    /**
+     * @return bool|mysqli_result
+     */
+    public function getCategories() {
+        return $this->getItems("SELECT * FROM categories;");
+    }
+
+    /**
      * @param $name
      * @param $url
      * @param $description
@@ -277,6 +346,48 @@ class functions extends database
     }
 
     /**
+     * @param $name
+     * @param $description
+     * @param $category
+     * @param $ingredients
+     * @return bool
+     */
+    public function addRecipe($name, $description, $category, $ingredients) {
+        if ($this->insertItem("INSERT INTO recipes (recipe_name, recipe_description, category_id, recipe_view) VALUES ('$name', '$description', '$category', '0');")) {
+            $recipeId = $this->getConn()->insert_id;
+            foreach($ingredients as $ingredient) {
+                $this->insertItem("INSERT INTO ingredients (recipe_id, product_id) VALUES ('" . $recipeId . "', '" . $ingredient . "')");
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $name
+     * @param $url
+     * @param $description
+     * @param $type
+     * @param $id
+     * @param $allergens
+     * @return bool
+     */
+    public function editRecipe($name, $description, $category, $ingredients, $id) {
+        if($this->updateItem("UPDATE recipes SET recipe_name = '$name', recipe_description = '$description', category_id = '$category' WHERE product_id = '$id';")) {
+            if ($this->removeItem("DELETE FROM ingredients WHERE recipe_id = '$id';")) {
+                foreach ($ingredients as $ingredient) {
+                    $this->insertItem("INSERT INTO ingredients (recipe_id, product_id) VALUES ('" . $id . "', '" . $ingredient . "')");
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param $id
      * @return bool|mysqli_result
      */
@@ -286,6 +397,10 @@ class functions extends database
         }
         
         return false;
+    }
+
+    public function removeClient($id) {
+        return $this->removeItem("DELETE FROM clients WHERE client_id = '" . $id . "';");
     }
 
     /**
