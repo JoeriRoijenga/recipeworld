@@ -3,7 +3,9 @@ spl_autoload_register(function ($class_name) {
     include "classes/" . $class_name . ".php";
 });
 
-session_start();
+include "redirects/admin.php";
+
+//session_start();
 $functions = new functions("recipeworld");
 $recipes = $functions->getRecipes();
 $message = "";
@@ -47,7 +49,7 @@ if (isset($_GET["add"])) {
     <div class="container-fluid">
         <div class="row">
             <div class="offset-11 custom-margin">
-                <form action="products_edit.php" method="post">
+                <form action="recipes_edit.php" method="post">
                     <button type="submit" class="btn btn-info">Voeg toe</button>
                 </form>
             </div>
@@ -67,7 +69,7 @@ if (isset($_GET["add"])) {
                     } elseif ($message !== false) {
                         ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Succes!</strong> Het product is <?php echo $message; ?>.
+                            <strong>Succes!</strong> Het recept is <?php echo $message; ?>.
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>

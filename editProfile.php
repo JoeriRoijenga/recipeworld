@@ -13,11 +13,13 @@
     <title>Bewerk Profiel</title>
     <!--Connectie naar DB-->
     <?php
+    include "redirects/normal.php";
+
     $servername = "localhost";
     $username = "recipeworld";
     $password = "root";
     $database = "recipeworld";
-    session_start();
+//    session_start();
     //    $_SESSION["id"] = "2";
 
     $connection = mysqli_connect($servername, $username, $password, $database);
@@ -27,9 +29,10 @@
     }
 
     if (empty($_POST)) {
-        echo "<h1>ERROR 400</h1>";
+        echo "<h1>ERROR (Lege POST)</h1>";
 
     } elseif (isset($_POST['submit']) || isset($_POST["client_id"])) {
+
     if (isset($_POST['submit'])) {
         if ($_POST['submit'] == "Bewerken") {
             $id = $_SESSION['id'];
@@ -39,8 +42,9 @@
     } elseif (isset($_POST["client_id"])) {
         $id = $_POST["client_id"];
     }
+
     if ($id !== false) {
-    $queryGetClient = "SELECT first_name, last_name, email, date_of_birth, permission_name, diet_name, last_online, diet_id
+    $queryGetClient = "SELECT client_id, first_name, last_name, email, date_of_birth, permission, diet_name, last_online, diet_id
                            FROM clients
                            JOIN diets ON clients.diet = diets.diet_id
                            JOIN permissions ON clients.permission = permissions.permissions_id
@@ -66,9 +70,11 @@
 
     <div>
 
+
         <table class="table">
 
             <form method="POST" action="#">
+                <input type="hidden" name="id" value="<?php echo $clientData['client_id']; ?>">
                 <tr>
                     <td class="align-right">
                         Naam:
@@ -117,18 +123,40 @@
                         </select>
                     </td>
                 </tr>
+
+                <?php
+                if($_SESSION['permission'] == '2'){
+                    ?>
+                    <tr>
+                        <td class="align-right">
+                            <b><u>Administrator:</u></b>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="permission" value="2" <?php if($clientData['permission'] === "2") {echo "checked";} ?>>
+                        </td>
+                    </tr>
+
+                    <?php
+                }
+                ?>
                 <tr>
                     <td>&nbsp</td>
                     <td>&nbsp</td>
                 </tr>
-                <tr>
-                    <td class="align-right">
-                        <b>Wachtwoord:</b>
-                    </td>
-                    <td>
-                        <input type="password" name="oldPassword" placeholder="Verplicht">
-                    </td>
-                </tr>
+                <?php
+                if($_SESSION['permission'] !== '2'){
+                    ?>
+                    <tr>
+                        <td class="align-right">
+                            <b>Wachtwoord:</b>
+                        </td>
+                        <td>
+                            <input type="password" name="oldPassword" placeholder="Verplicht">
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
                 <tr>
                     <td>&nbsp</td>
                     <td>&nbsp</td>
@@ -164,6 +192,7 @@
     <?php
     }
     }
+
     if (isset($_POST["submit"])) {
         if ($_POST['submit'] == "Versturen") {
 
@@ -186,25 +215,45 @@
 
             if (empty($error)) {
 
+                if(!isset($_POST['permission'])) {
+                    $_POST['permission'] = "1";
+                }
 
-                $queryGetPassword = "SELECT password FROM clients WHERE client_id = " . $_SESSION['id'] . ";";
+
+
+                $queryGetPassword = "SELECT password FROM clients WHERE client_id = " . $_POST['id'] . ";";
                 $result = mysqli_query($connection, $queryGetPassword);
+//                echo $queryGetPassword;
                 $result = mysqli_fetch_assoc($result);
-                $savedPassword = $result['password'];
 
-                $oldPassword = md5($_POST['oldPassword']);
-                if ($savedPassword === $oldPassword) {
+                if ($_SESSION['permission'] == "1") {
+                    $oldPassword = md5($_POST['oldPassword']);
+                    $savedPassword = $result['password'];
+                } elseif($_SESSION['permission'] == "2") {
+                    $oldPassword = "test";
+                    $savedPassword = "test";
+                }
 
 
-                    $queryUpdateClient = "UPDATE recipeworld.clients SET `first_name` = \"" . $_POST['first_name'] . "\", `last_name` = \"" . $_POST['last_name'] . "\", `email` = \"" . $_POST['email'] . "\", `date_of_birth` = \"" . $_POST['date_of_birth'] . "\", `diet` = " . $_POST['diet_id'] . " WHERE client_id = " . $_SESSION["id"] . ";";
+                if ($savedPassword === $oldPassword or $_SESSION['permission'] == "2") {
+
+
+                    $queryUpdateClient = "UPDATE recipeworld.clients SET `first_name` = \"" . $_POST['first_name'] . "\", `last_name` = \"" . $_POST['last_name'] . "\", `email` = \"" . $_POST['email'] . "\", `date_of_birth` = \"" . $_POST['date_of_birth'] . "\", `diet` = " . $_POST['diet_id'] . " WHERE client_id = " . $_POST['id'] . ";";
                     mysqli_query($connection, $queryUpdateClient);
 
+                    if (isset($_POST['permission'])) {
+
+                        $queryUpdatePermission = "UPDATE recipeworld.clients SET `permission` = \"" . $_POST['permission'] . "\" WHERE client_id = " . $_POST['id'] . ";";
+                        mysqli_query($connection, $queryUpdatePermission);
+//                        echo $queryUpdatePermission;
+
+
+                    }
                     if (!empty($_POST['newPassword']) && !empty($_POST['newPasswordConfirm'])) {
                         if ($_POST['newPasswordConfirm'] === $_POST['newPassword']) {
                             $newPassword = $_POST['newPassword'];
                             $newPassword = md5($newPassword);
-
-                            $queryUpdatePassword = "UPDATE recipeworld.clients SET `password` = \"" . $newPassword . "\" WHERE client_id = " . $_SESSION['id'] . ";";
+                            $queryUpdatePassword = "UPDATE recipeworld.clients SET `password` = \"" . $newPassword . "\" WHERE client_id = " . $_POST['id'] . ";";
                             mysqli_query($connection, $queryUpdatePassword);
 //                        echo $queryUpdatePassword;
                         } else {
@@ -280,5 +329,3 @@
 </div>
 
 </body>
-
-

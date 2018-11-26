@@ -3,6 +3,8 @@ spl_autoload_register(function ($class_name) {
     include "classes/" . $class_name . ".php";
 });
 
+include "redirects/admin.php";
+
 $functions = new functions("recipeworld");
 $diets = $functions->getDiets();
 
@@ -103,7 +105,7 @@ if (isset($_POST["submit"])) {
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="birthday">Geboortedatum</label>
                             <div class="col-md-4">
-                                <input id="birthday" name="birthday" type="date" class="form-control input-md custom-width-textbox">
+                                <input id="birthday" name="birthday" type="date" class="form-control input-md custom-width-textbox" min="1950-01-01" >
                             </div>
                         </div>
 

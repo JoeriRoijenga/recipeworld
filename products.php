@@ -2,8 +2,9 @@
 spl_autoload_register(function ($class_name) {
     include "classes/" . $class_name . ".php";
 });
+include "redirects/admin.php";
 
-session_start();
+//session_start();
 $functions = new functions("recipeworld");
 $products = $functions->getProducts();
 $message = "";

@@ -3,7 +3,9 @@ spl_autoload_register(function ($class_name) {
     include "classes/" . $class_name . ".php";
 });
 
-session_start();
+include "redirects/admin.php";
+
+//session_start();
 $functions = new functions("recipeworld");
 $text = "Toevoegen";
 $name = $url = $description = "";

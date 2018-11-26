@@ -353,7 +353,7 @@ class functions extends database
      * @return bool
      */
     public function addRecipe($name, $description, $category, $ingredients) {
-        if ($this->insertItem("INSERT INTO recipes (recipe_name, recipe_description, category_id, recipe_view) VALUES ('$name', '$description', '$category', '0');")) {
+        if ($this->insertItem("INSERT INTO recipes (recipe_name, recipe_description, category_id, recipe_views) VALUES ('$name', '$description', '$category', '0');")) {
             $recipeId = $this->getConn()->insert_id;
             foreach($ingredients as $ingredient) {
                 $this->insertItem("INSERT INTO ingredients (recipe_id, product_id) VALUES ('" . $recipeId . "', '" . $ingredient . "')");
@@ -375,13 +375,25 @@ class functions extends database
      * @return bool
      */
     public function editRecipe($name, $description, $category, $ingredients, $id) {
-        if($this->updateItem("UPDATE recipes SET recipe_name = '$name', recipe_description = '$description', category_id = '$category' WHERE product_id = '$id';")) {
+        if($this->updateItem("UPDATE recipes SET recipe_name = '$name', recipe_description = '$description', category_id = '$category' WHERE recipe_id = '$id';")) {
             if ($this->removeItem("DELETE FROM ingredients WHERE recipe_id = '$id';")) {
                 foreach ($ingredients as $ingredient) {
                     $this->insertItem("INSERT INTO ingredients (recipe_id, product_id) VALUES ('" . $id . "', '" . $ingredient . "')");
                 }
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
+    public function removeRecipe($id) {
+        if($this->removeItem("DELETE FROM ingredients WHERE recipe_id = '$id';") && $this->removeItem("DELETE FROM recipes WHERE recipe_id = '" . $id . "';")) {
+            return true;
         }
 
         return false;
@@ -399,6 +411,10 @@ class functions extends database
         return false;
     }
 
+    /**
+     * @param $id
+     * @return bool|mysqli_result
+     */
     public function removeClient($id) {
         return $this->removeItem("DELETE FROM clients WHERE client_id = '" . $id . "';");
     }

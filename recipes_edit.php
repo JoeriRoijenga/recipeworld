@@ -3,7 +3,9 @@ spl_autoload_register(function ($class_name) {
     include "classes/" . $class_name . ".php";
 });
 
-session_start();
+include "redirects/admin.php";
+
+//session_start();
 $functions = new functions("recipeworld");
 $text = "Toevoegen";
 $name = $url = $description = "";
@@ -42,11 +44,11 @@ if (isset($_POST["submit"])) {
     if ($name !== "" AND $description !== false AND $chosenCategory !== false AND $chosenIngredients !== false) {
         if ($_POST["hidden"] === "0") {
             if ($functions->addRecipe($name, $description, $chosenCategory, $chosenIngredients)) {
-                header("Location: products.php?add=true");
+                header("Location: recipes.php?add=true");
             }
         } elseif ($_POST["hidden"] === "1") {
             if ($functions->editRecipe($name, $description, $chosenCategory, $chosenIngredients, $id)) {
-                header("Location: products.php?edit=true");
+                header("Location: recipes.php?edit=true");
             }
         }
     }

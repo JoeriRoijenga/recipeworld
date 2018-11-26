@@ -1,5 +1,7 @@
 <!doctype html>
 <?php
+include "redirects/normal.php";
+
 /*
  * Connectie naar DB
 */
@@ -7,8 +9,8 @@ $servername = "localhost";
 $username = "recipeworld";
 $password = "root";
 $database = "recipeworld";
-session_start();
-//$_SESSION["id"] = "5";
+//session_start();
+//$_SESSION["id"] = "1";
 
 $connection = mysqli_connect($servername, $username, $password, $database);
 
@@ -16,10 +18,12 @@ if (mysqli_connect_errno()) {
     die (mysqli_connect_error());
 }
 /*
-Query om naam op te halen
+Query om naam van de ingelogde gebruiker op te halen
 */
 $naamquery = "SELECT first_name FROM clients WHERE client_id = " . $_SESSION["id"];
 $naamresult = mysqli_query($connection, $naamquery) or die (mysqli_error($connection));
+/*Menu inladen*/
+include "menu.php";
 ?>
 <html lang="en">
 <head>
@@ -29,18 +33,14 @@ $naamresult = mysqli_query($connection, $naamquery) or die (mysqli_error($connec
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
     <title>Mijn Koelkast</title>
 </head>
 <body>
-    <div id="menu">
-        <?php include 'menu.php'; ?>
-    </div>
-
 <div class="container">
     <!--P R O D U C T E N-->
     <center><h2><?php
@@ -71,10 +71,17 @@ $result = mysqli_query($connection, $query) or die (mysqli_error($connection));
 
 if ($result->num_rows > 0) {
     echo "<center>";
+    echo "<form method='post'>";
+    echo "<table>";
     foreach ($result as $item) {
-        echo "<form method='post'><input type='hidden' name='productid' value='" . $item["product_id"] . "'/>";
-        echo $item["product_name"] . " <button id=\"verwijderp\" name=\"verwijderp\" class=\"btn btn-primary\">Verwijder</button></form>";
+        echo "<tr><td>";
+        echo "<input type='hidden' name='productid' value='" . $item["product_id"] . "'/>";
+        echo $item["product_name"] . " </td><td>
+             <button id=\"verwijderp\" name=\"verwijderp\" class=\"btn btn-primary\">Verwijder</button>";
+        echo "</td></tr>";
     }
+    echo "</table>";
+    echo "</form>";
     echo "</center>";
 } else echo "<center>U heeft nog geen producten in uw koelkast.</center>";
 ?>
@@ -118,10 +125,17 @@ if (isset($_POST["submitp"]) && $_POST["producten"] == NULL) {
     <?php
     if ($result3->num_rows > 0) {
         echo "<center>";
+        echo "<form method='post'>";
+        echo "<table>";
         foreach ($result3 as $foundp) {
-            echo "<form method='post'><input type='hidden' name='productid' value='" . $foundp["product_id"] . "'/>";
-            echo $foundp["product_name"] . " <button id=\"toevoegp\" name=\"toevoegp\" class=\"btn btn-primary\">Voeg toe</button></form>";
+            echo "<tr><td>";
+            echo "<input type='hidden' name='productid' value='" . $foundp["product_id"] . "'/>";
+            echo $foundp["product_name"] . " </td><td>
+                 <button id=\"toevoegp\" name=\"toevoegp\" class=\"btn btn-primary\">Voeg toe</button>";
+            echo "</td></tr>";
         }
+        echo "</table>";
+        echo "</form>";
         echo "</center>";
     } else echo "<center>Er zijn geen producten gevonden.</center>";
     echo "<hr>";
@@ -156,6 +170,9 @@ $result1 = mysqli_query($connection, $query1) or die (mysqli_error($connection))
 
 /*Percentage berekenen*/
 if ($result1->num_rows > 0) {
+    echo "<center>";
+    echo "<form method='post'>";
+    echo "<table>";
     while ($item = $result1->fetch_assoc()) {
         $percentage = "SELECT * FROM ingredients WHERE recipe_id = " . $item["recipe_id"];
         $perresult = mysqli_query($connection, $percentage) or die (mysqli_error($connection));
@@ -167,12 +184,16 @@ if ($result1->num_rows > 0) {
                 $aantal++;
             }
         }
-        $aantal = ($aantal / $perresult->num_rows) * 100;
-        echo "<center>";
-        echo "<form method='post'><input type='hidden' name='recipeid' value='" . $item["recipe_id"] . "'/>";
-        echo $item["recipe_name"] . " " . $aantal . "%" . " <button id=\"verwijderr\" name=\"verwijderr\" class=\"btn btn-primary\">Verwijder</button></form>";
-        echo "</center>";
+        $aantal = round(($aantal / $perresult->num_rows) * 100);
+        echo "<tr><td>";
+        echo "<input type='hidden' name='recipeid' value='" . $item["recipe_id"] . "'/>";
+        echo $item["recipe_name"] . " (" . $aantal . "% aanwezig in uw koelkast)</td><td>" . "
+             <button id=\"verwijderr\" name=\"verwijderr\" class=\"btn btn-primary\">Verwijder</button>";
+        echo "</td></tr>";
     }
+    echo "</table>";
+    echo "</form>";
+    echo "</center>";
 } else echo "<center>U heeft nog geen favoriete recepten.</center>";
 ?>
 <!--
@@ -214,26 +235,22 @@ if (isset($_POST["submitr"]) && $_POST["recepten"] == NULL) {
     <?php
     if ($result2->num_rows > 0) {
         echo "<center>";
+        echo "<form method='post'>";
+        echo "<table>";
         foreach ($result2 as $foundr) {
-            echo "<form method='post'><input type='hidden' name='recipeid' value='" . $foundr["recipe_id"] . "'/>";
-            echo $foundr["recipe_name"] . " <button id=\"toevoegr\" name=\"toevoegr\" class=\"btn btn-primary\">Voeg toe</button></form>";
+            echo "<tr><td>";
+            echo "<input type='hidden' name='recipeid' value='" . $foundr["recipe_id"] . "'/>";
+            echo $foundr["recipe_name"] . " </td><td>
+                 <button id=\"toevoegr\" name=\"toevoegr\" class=\"btn btn-primary\">Voeg toe</button>";
+            echo "</td></tr>";
         }
+        echo "</table>";
+        echo "</form>";
         echo "</center>";
     } else echo "<center>Er zijn geen recepten gevonden.</center>";
 }
 mysqli_close($connection);
 ?>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"-->
-<!--        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"-->
-<!--        crossorigin="anonymous"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"-->
-<!--        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"-->
-<!--        crossorigin="anonymous"></script>-->
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"-->
-<!--        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"-->
-<!--        crossorigin="anonymous"></script>-->
 </br>
 </body>
 </html>
