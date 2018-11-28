@@ -15,7 +15,7 @@
     $username = "recipeworld";
     $password = "root";
     $database = "recipeworld";
-//    session_start();
+    session_start();
 
     $connection = mysqli_connect($servername, $username, $password, $database);
 
@@ -63,7 +63,7 @@
             $categories = $connection->query($queryGetCategories);
             while($category = $categories->fetch_assoc()){
 
-                echo "<a href='recipe.php?category=" . $category['category_id'] . "'>" . $category['category_name'] . "</a>";
+                echo "<a href='recipesSearch.php?recipeType=" . $category['category_id'] . "&submitFilter=Toon+Resultaten'>" . $category['category_name'] . "</a>";
                 echo "<br>";
             }
             ?>

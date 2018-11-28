@@ -187,7 +187,7 @@ if ($result1->num_rows > 0) {
         $aantal = round(($aantal / $perresult->num_rows) * 100);
         echo "<tr><td>";
         echo "<input type='hidden' name='recipeid' value='" . $item["recipe_id"] . "'/>";
-        echo $item["recipe_name"] . " (" . $aantal . "% aanwezig in uw koelkast)</td><td>" . "
+        echo "<a href='recipeprofile.php?id=" . $item["recipe_id"] ."'>" . $item["recipe_name"] ."</a>". " (" . $aantal . "% aanwezig in uw koelkast)</td><td>" . "
              <button id=\"verwijderr\" name=\"verwijderr\" class=\"btn btn-primary\">Verwijder</button>";
         echo "</td></tr>";
     }
@@ -240,7 +240,8 @@ if (isset($_POST["submitr"]) && $_POST["recepten"] == NULL) {
         foreach ($result2 as $foundr) {
             echo "<tr><td>";
             echo "<input type='hidden' name='recipeid' value='" . $foundr["recipe_id"] . "'/>";
-            echo $foundr["recipe_name"] . " </td><td>
+
+            echo "<a href='recipeprofile.php?id=" . $foundr["recipe_id"] . "'>". $foundr["recipe_name"] . "</a>" ." </td><td>
                  <button id=\"toevoegr\" name=\"toevoegr\" class=\"btn btn-primary\">Voeg toe</button>";
             echo "</td></tr>";
         }

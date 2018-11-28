@@ -225,7 +225,7 @@ class functions extends database
      * @return bool|mysqli_result
      */
     public function getProducts() {
-        return $this->getItems("SELECT * FROM products;");
+        return $this->getItems("SELECT * FROM products ORDER BY product_name;");
     }
 
     /**
@@ -262,7 +262,7 @@ class functions extends database
      * @return bool|mysqli_result
      */
     public function getRecipes() {
-        return $this->getItems("SELECT * FROM recipes;");
+        return $this->getItems("SELECT * FROM recipes ORDER BY recipe_name;");
     }
 
     /**
@@ -392,7 +392,7 @@ class functions extends database
      * @return bool|mysqli_result
      */
     public function removeRecipe($id) {
-        if($this->removeItem("DELETE FROM ingredients WHERE recipe_id = '$id';") && $this->removeItem("DELETE FROM recipes WHERE recipe_id = '" . $id . "';")) {
+        if($this->removeItem("DELETE FROM favourites WHERE recipe_id = '$id';") && $this->removeItem("DELETE FROM ingredients WHERE recipe_id = '$id';") && $this->removeItem("DELETE FROM recipes WHERE recipe_id = '" . $id . "';")) {
             return true;
         }
 

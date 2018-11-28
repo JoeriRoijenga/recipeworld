@@ -11,11 +11,12 @@
     <title>Contact</title>
     <!--Connectie naar DB-->
     <?php
+    include 'redirects/normal.php';
     $servername = "localhost";
     $username = "recipeworld";
     $password = "root";
     $database = "recipeworld";
-    session_start();
+//    session_start();
 //    $_SESSION["id"] = "6";
 
     $connection = mysqli_connect($servername, $username, $password, $database);

@@ -17,6 +17,11 @@
                 </li>
             <?php
             }
+            ?>
+            <li class="nav-item">
+                <a class="nav-link" href="recipesSearch.php">Recepten Zoeken</a>
+            </li>
+            <?php
             if (isset($_SESSION["id"])) {
                 if ($_SESSION["permission"] === "2") {
                     ?>
@@ -32,10 +37,18 @@
                     <?php
                 }
             }
+            if (isset($_SESSION["id"])) {
+                ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.php">Contact</a>
+                </li>
+                <?php
+            }
             ?>
         </ul>
-        <form class="form-inline my-2 my-lg-0" action="recipe.php" method="get">
-            <input class="form-control mr-sm-2" type="search" placeholder="Zoeken" aria-label="search" name="search">
+        <form class="form-inline my-2 my-lg-0" action="recipesSearch.php" method="get">
+            <input class="form-control mr-sm-2" type="search" placeholder="Zoeken" aria-label="search" name="rName">
+            <input type="hidden" name="submitFilter" value="Toon+Resultaten"/>
             <button class="btn btn-outline-primary my-2 my-sm-0" type="submit"><span class="fas fa-search"></span></button>
         </form>
         <ul class="navbar-nav mt-2 mt-lg-0">

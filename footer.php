@@ -31,8 +31,9 @@
                     }
                     ?>
                     <a href="faq.php"><span class="footer-links">FAQ</span></a></br>
+                    <?php if (isset($_SESSION["id"])) { ?>
                     <a href="contact.php"><span class="footer-links">Contact</span></a></br>
-
+                    <?php } ?>
                 </div>
             </div>
 

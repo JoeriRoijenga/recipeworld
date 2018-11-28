@@ -115,7 +115,7 @@
         $queryGetMessages = "SELECT first_name, message_message, message_timesend FROM recipeworld.inbox
                                      JOIN messages ON inbox.message_id = messages.message_id
                                      JOIN clients ON inbox.client_id = clients.client_id 
-                                     WHERE permission = 1
+                                     WHERE permission = 2
                                      ORDER BY messages.message_timesend DESC;";
         $result = mysqli_query($connection, $queryGetMessages);
 

@@ -102,7 +102,7 @@ if (isset($_POST["submit"])) {
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="recipe_description">Omschrijving</label>
                             <div class="col-md-4">
-                                <input id="recipe_description" name="recipe_description" type="text" placeholder="Omschrijving" class="form-control input-md custom-width-textbox" value="<?php echo $description; ?>">
+                                <textarea id="recipe_description" name="recipe_description" rows="10" placeholder="Omschrijving" class="form-control input-md custom-width-textbox" maxlength="1000"><?php echo $description; ?></textarea>
                             </div>
                         </div>
 
@@ -123,7 +123,7 @@ if (isset($_POST["submit"])) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="product_allergens">Allergieën</label>
+                            <label class="col-md-4 control-label">Producten</label>
                             <div class="col-md-10">
                                 <select name="recipe_ingredients[]" class="custom-multi-select" multiple>
                                     <?php
